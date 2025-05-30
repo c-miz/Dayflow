@@ -51,6 +51,13 @@
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QPushButton" name="filterButton">
+            <property name="text">
+             <string>筛选</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
        </layout>

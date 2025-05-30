@@ -14,11 +14,10 @@ void EventCalendar::setEvents(const QMap<QDate, int>& events)
     refreshView();
 }
 
-void EventCalendar::paintCell(QPainter *painter, const QRect &rect, const QDate &date) const
+void EventCalendar::paintCell(QPainter *painter, const QRect &rect, const QDate date) const
 {
     // 先调用基类绘制基础内容
     QCalendarWidget::paintCell(painter, rect, date);
-
     // 背景色渐变处理
     if (m_events.contains(date)) {
         painter->save();

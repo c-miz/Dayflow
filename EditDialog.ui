@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>230</width>
-    <height>174</height>
+    <width>177</width>
+    <height>271</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,9 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="1">
+      <widget class="QTimeEdit" name="startTimeEdit"/>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
@@ -40,21 +43,8 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="repeatCombo"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="QTimeEdit" name="startTimeEdit"/>
-     </item>
      <item row="2" column="1">
       <widget class="QTimeEdit" name="endTimeEdit"/>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>重复类型：</string>
-       </property>
-      </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_5">
@@ -66,10 +56,60 @@
      <item row="3" column="1">
       <widget class="QDateEdit" name="dateEdit"/>
      </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>重复类型：</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="repeatCombo"/>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="tag1Edit"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_tag2">
+       <property name="text">
+        <string>tag2</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QComboBox" name="tag2Edit"/>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="label_tag3">
+       <property name="text">
+        <string>tag3</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QComboBox" name="tag3Edit"/>
+     </item>
+     <item row="9" column="1">
+      <widget class="QSpinBox" name="priorbox"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_tag1">
+       <property name="text">
+        <string>tag1</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QLabel" name="label_priority">
+       <property name="text">
+        <string>优先级</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>提前提醒时间（min）</string>
+        <string>提前提醒时间(min)</string>
        </property>
       </widget>
      </item>

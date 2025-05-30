@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "calendarview.h"
+#include "schedulefilterproxymodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,10 +24,11 @@ private slots:
     void onAdd();
     void onEdit();
     void onDelete();
-
+    void onFilter();
 private:
     Ui::MainWindow *ui;
     ScheduleModel *model;
+    ScheduleFilterProxyModel *proxyModel; //代理模型，用于总览界面的排序
     void setupTableView();
     void setupCalendarView();
     CalendarView *m_calendarView;
@@ -35,7 +37,5 @@ private:
     QPushButton *prevMonthBtn;
     QPushButton *nextMonthBtn;
 };
-
-
 
 #endif // MAINWINDOW_H

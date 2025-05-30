@@ -26,7 +26,7 @@ public:
     }
 
 protected:
-    void paintCell(QPainter *painter, const QRect &rect, const QDate &date) const;
+    void paintCell(QPainter *painter, const QRect &rect, const QDate date) const override;
 
 private:
     QMap<QDate, int> m_events;

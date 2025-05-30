@@ -65,7 +65,7 @@ void CalendarView::paintEventMarkers()
 
     QDate monthStart = m_calendar->selectedDate().addDays(
         -m_calendar->selectedDate().day() + 1);
-     QDate monthEnd = monthStart.addMonths(1).addDays(-1);
+    QDate monthEnd = monthStart.addMonths(1).addDays(-1);
 
     // 遍历所有日程项
     for (int i = 0; i < m_model->rowCount(); ++i) {
@@ -99,13 +99,22 @@ void CalendarView::handleDateClick(const QDate &date)
     QVector<ScheduleItem> events = m_model->getSchedulesForDate(date);
     QStringList eventDetails;
 
-    for(const auto &item : events) {
-        eventDetails << QString("%1-%2 %3")
-        .arg(item.startTime.toString("hh:mm"))
-            .arg(item.endTime.toString("hh:mm"))
-            .arg(item.title);
+    if(events.empty()){
+        eventDetails<<"当天没有日程";
+    }
+    else{
+        for(const auto &item : events) {
+            QString detail = QString("%1-%2 %3")
+            .arg(item.startTime.toString("HH:mm"))
+                .arg(item.endTime.toString("HH:mm"))
+                .arg(item.title);
+            if(!item.tags.isEmpty()){
+                detail.append(QString(QString(" [%1]").arg(item.tags.join(", ")))); //tag项
+            }
+            eventDetails<<detail;
+        }
     }
 
-    QMessageBox::information(this, date.toString("yyyy-MM-dd"),
+    QMessageBox::information(this, date.toString("yyyy-MM-dd")+"日程",
                              eventDetails.join("\n"));
 }

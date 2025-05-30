@@ -5,7 +5,8 @@ ScheduleModel::ScheduleModel(QObject *parent) : QAbstractTableModel(parent) {}
 
 int ScheduleModel::rowCount(const QModelIndex &) const { return items.size(); }
 
-int ScheduleModel::columnCount(const QModelIndex &) const { return 5; }
+// 列数增加2列用于显示标签，优先级
+int ScheduleModel::columnCount(const QModelIndex &) const { return 7; } // 从 5 改为 7
 
 QVariant ScheduleModel::data(const QModelIndex &index, int role) const
 {
@@ -24,7 +25,11 @@ QVariant ScheduleModel::data(const QModelIndex &index, int role) const
         case Daily: return "每天";
         case Weekly: return "每周";
         case Monthly: return "每月";
-        }
+        };
+    case 5: // 新增标签列
+        return item.tags.join(", ");
+    case 6:  //优先级
+        return item.priority;
     }
     return QVariant();
 }
@@ -38,6 +43,8 @@ QVariant ScheduleModel::headerData(int section, Qt::Orientation orientation, int
         case 2: return "开始时间";
         case 3: return "结束时间";
         case 4: return "重复类型";
+        case 5: return "标签"; // 新增标签列表头
+        case 6:return "优先级"; //新增优先级
         }
     }
     return QVariant();
@@ -57,6 +64,7 @@ void ScheduleModel::removeItem(int row)
     beginRemoveRows(QModelIndex(), row, row);
     items.removeAt(row);
     endRemoveRows();
+    emit modelChanged(); // 移除后也应发出信号，以便CalendarView等更新
 }
 
 ScheduleItem ScheduleModel::getItem(int row) const
@@ -112,5 +120,4 @@ QVector<ScheduleItem> ScheduleModel::getSchedulesForDate(const QDate& date) cons
     }
     return result;
 }
-
 
