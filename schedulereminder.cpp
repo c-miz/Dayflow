@@ -11,13 +11,33 @@ ScheduleReminder::ScheduleReminder(ScheduleModel* model,QObject *parent) : QObje
     checkTimer.start();
 }
 void ScheduleReminder::checkSchedules(){
-    const QDateTime current = QDateTime::currentDateTime();
+    const QTime currentTime = QTime::currentTime();
+    const QDate currentDate=QDate::currentDate();
     for(int i = 0; i < m_model->rowCount(); ++i) {
         const ScheduleItem &item = m_model->getItem(i);
-        QDateTime scheduletime(item.date,item.startTime);
-        scheduletime=scheduletime.addSecs(-60*item.advanceAmount);
+        QTime scheduletime=item.startTime.addSecs(-60*item.advanceAmount);
+        QDate scheduleDate=item.date;
+        bool checkDate=false;
+        if(currentDate==scheduleDate){checkDate=true;}
+        else if(item.repeatType!=None){
+            if(scheduleDate<currentDate){
+                if(item.repeatType==Daily){checkDate=true;}
 
-        if( current >= scheduletime&&current<=scheduletime.addSecs(60)) {
+                else if(item.repeatType==Weekly){
+                    if(scheduleDate.daysTo(currentDate)%7==0){
+                        checkDate=true;
+                    }
+                }
+
+                else if(item.repeatType==Monthly){
+                    if(scheduleDate.day()==currentDate.day()){
+                        checkDate=true;
+                    }
+                }
+            }
+        }
+
+        if( checkDate==true&&currentTime >= scheduletime&&currentTime<scheduletime.addSecs(60)) {
             // 触发提醒
             QString msg = QString("日程提醒：%1 即将在%2分钟后开始")
                               .arg(item.title)

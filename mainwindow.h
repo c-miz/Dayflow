@@ -6,7 +6,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include "calendarview.h"
-#include "schedulereminder.h"
 
 namespace Ui {
 class MainWindow;
