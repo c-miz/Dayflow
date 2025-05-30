@@ -2,6 +2,8 @@
 #include "ui_MainWindow.h"
 #include "EditDialog.h"
 #include "calendarview.h"
+#include "notification.h"
+#include "schedulereminder.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), model(new ScheduleModel(this))
@@ -9,12 +11,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     setupTableView();
     setupCalendarView();
+    ScheduleReminder* reminder=new ScheduleReminder(model);
+    Notification* notify=new Notification;
 
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::onAdd);
     connect(ui->editButton, &QPushButton::clicked, this, &MainWindow::onEdit);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::onDelete);
     connect(model, &ScheduleModel::modelChanged,
             m_calendarView, &CalendarView::refresh);
+    connect(reminder, &ScheduleReminder::triggerReminder,
+            notify, &Notification::handleReminder);
 }
 
 MainWindow::~MainWindow() { delete ui; }

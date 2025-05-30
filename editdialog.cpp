@@ -14,6 +14,7 @@ EditDialog::EditDialog(QWidget *parent, const ScheduleItem &item)
     ui->dateEdit->setDate(item.date);
     ui->repeatCombo->addItems({"无重复", "每天", "每周", "每月"});
     ui->repeatCombo->setCurrentIndex(item.repeatType);
+    ui->remindTime->setValue(item.advanceAmount);
 
     // 连接时间验证信号
     connect(ui->startTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &EditDialog::validateTimes);
@@ -30,6 +31,7 @@ ScheduleItem EditDialog::getScheduleItem() const
     item.endTime = ui->endTimeEdit->time();
     item.date=ui->dateEdit->date();
     item.repeatType = static_cast<RepeatType>(ui->repeatCombo->currentIndex());
+    item.advanceAmount=ui->remindTime->value();
     return item;
 }
 

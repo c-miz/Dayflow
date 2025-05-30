@@ -21,7 +21,6 @@ private slots:
 
 private:
     void paintEventMarkers();
-    void setupNavigation();
 
     ScheduleModel *m_model;
     QCalendarWidget *m_calendar;

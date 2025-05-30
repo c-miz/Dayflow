@@ -14,13 +14,15 @@ public:
                  QTime start = QTime::currentTime(),
                  QTime end = QTime::currentTime().addSecs(3600),
                  QDate d=QDate::currentDate(),
-                 RepeatType repeat = None);
+                 RepeatType repeat = None,
+                 int advanceAmount=5);
 
     QString title;
     QTime startTime;
     QTime endTime;
     QDate date;
     RepeatType repeatType;
+    int advanceAmount;
 
     // 验证时间有效性
     bool isValid() const;

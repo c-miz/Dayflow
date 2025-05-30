@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>177</width>
-    <height>153</height>
+    <width>230</width>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,6 +65,16 @@
      </item>
      <item row="3" column="1">
       <widget class="QDateEdit" name="dateEdit"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>提前提醒时间（min）</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSpinBox" name="remindTime"/>
      </item>
     </layout>
    </item>

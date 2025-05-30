@@ -33,6 +33,9 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         EditDialog.ui
         calendarview.h calendarview.cpp
         eventcalendar.h eventcalendar.cpp
+        schedulereminder.h schedulereminder.cpp
+        notification.h notification.cpp
+
 
 
 

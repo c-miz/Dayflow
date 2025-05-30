@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include "calendarview.h"
+#include "schedulereminder.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,8 +29,6 @@ private:
     Ui::MainWindow *ui;
     ScheduleModel *model;
     void setupTableView();
-    void initMonthView();
-    void updateMonthLabel();
     void setupCalendarView();
     CalendarView *m_calendarView;
 
@@ -37,5 +36,7 @@ private:
     QPushButton *prevMonthBtn;
     QPushButton *nextMonthBtn;
 };
+
+
 
 #endif // MAINWINDOW_H
