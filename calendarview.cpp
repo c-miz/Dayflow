@@ -74,6 +74,7 @@ void CalendarView::paintEventMarkers()
         // 扩展重复事件
         QDate current = item.date;
         QDate maxDate=current.addYears(10);
+        int add_month=0;
         while (current <= maxDate) {
             if (current >= monthStart) {
                 dateEvents[current]++;
@@ -82,7 +83,11 @@ void CalendarView::paintEventMarkers()
             switch(item.repeatType) {
             case Daily: current = current.addDays(1); break;
             case Weekly: current = current.addDays(7); break;
-            case Monthly: current = current.addMonths(1); break;
+            case Monthly: {
+                add_month++;
+                current=item.date.addMonths(add_month);
+                break;
+            }
             default: break;
             }
 

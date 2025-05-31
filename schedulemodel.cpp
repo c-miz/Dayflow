@@ -109,12 +109,15 @@ QVector<ScheduleItem> ScheduleModel::getSchedulesForDate(const QDate& date) cons
         }
         else if(item.repeatType==Monthly){
             QDate current = startDate;
+            int add_month=0;
             while(current<=maxDate) {
                 if (current == date) {
                     result.append(item);
                     break;
                 }
-                current = current.addMonths(1);
+                add_month++;
+                current = startDate.addMonths(add_month);
+
             }
         }
     }
