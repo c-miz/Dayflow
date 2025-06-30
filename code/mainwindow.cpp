@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     if (!bgPath.isEmpty()) {
         m_calendarView->setBackgroundImage(bgPath);
     }
-    ScheduleReminder* reminder=new ScheduleReminder(model);
     Notification* notify=new Notification;
     model->loadFromJson();
+    ScheduleReminder* reminder=new ScheduleReminder(model);
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::onAdd);
     connect(ui->editButton, &QPushButton::clicked, this, &MainWindow::onEdit);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::onDelete);
