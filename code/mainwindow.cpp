@@ -6,10 +6,7 @@
 #include <QHeaderView>
 #include "filterdialog.h"
 #include "schedulereminder.h"
-#include <QFile>
-#include <QApplication>
-#include <QSettings>
-#include <QTextStream>
+#include "courseschedule.h"
 #include "QLineEdit"
 #include "category.h"
 #include "QStandardPaths"
@@ -24,6 +21,7 @@
 #include "qdesktopservices.h"
 #include "QFileDialog"
 #include "QTreeWidget"
+
 const QString MainWindow::CONFIG_FILENAME = "categories.json";
 const int PRIORITY_COLUMN=6;  //优先级列
 MainWindow::MainWindow(QWidget *parent)
@@ -33,33 +31,27 @@ MainWindow::MainWindow(QWidget *parent)
     proxyModel->setSourceModel(model);  //设置模型代理
     setupTableView();
     setupCalendarView();
-    setupTheme();
     setupcategoryPage();
     setupFileManagementPage();
-    QSettings settings("MyWork", "Dayflow");
-    QString bgPath = settings.value("backgroundImagePath", "").toString();
-    if (!bgPath.isEmpty()) {
-        m_calendarView->setBackgroundImage(bgPath);
-    }
-    Notification* notify=new Notification;
-    model->loadFromJson();
     ScheduleReminder* reminder=new ScheduleReminder(model);
+    Notification* notify=new Notification;
+    model->loadFromJson(); // 启动时加载数据
     connect(ui->addButton, &QPushButton::clicked, this, &MainWindow::onAdd);
     connect(ui->editButton, &QPushButton::clicked, this, &MainWindow::onEdit);
     connect(ui->deleteButton, &QPushButton::clicked, this, &MainWindow::onDelete);
     connect(ui->filterButton, &QPushButton::clicked, this, &MainWindow::onFilter);
     connect(model, &ScheduleModel::modelChanged,m_calendarView, &CalendarView::refresh);
     connect(reminder, &ScheduleReminder::triggerReminder,notify, &Notification::handleReminder);
-    connect(m_calendarView, &CalendarView::themeChangeRequested, this, &MainWindow::onToggleTheme);
-    connect(m_calendarView, &CalendarView::backgroundImageChanged, this, &MainWindow::onBackgroundImageChanged);
     connect(ui->tabWidget, &QTabWidget::currentChanged, [=](int index){
         if(ui->tabWidget->tabText(index) == "文件管理") {
             refreshFileManagementCategories();
         }
     });
     proxyModel->sort(PRIORITY_COLUMN,Qt::DescendingOrder); //代理模型排序
+    // 实现新页面：相对独立的课程表,记录了课程信息
+    QWidget * filepage = new CourseSchedule();
+    ui->tabWidget->addTab(filepage, "课程表");
 }
-
 void MainWindow::initConfigFile()
 {
     QJsonObject root = loadJsonConfig();
@@ -767,51 +759,4 @@ void MainWindow::onFilter()
         FilterCriteria criteria = dlg.getCriteria();
         proxyModel->setFilterCriteria(criteria); // 将筛选条件设置到代理模型
     }
-}
-void MainWindow::applyTheme(Theme theme) {
-    QString qss;
-    QString path = (theme == Theme::Dark) ? ":/styles/dark.qss" : ":/styles/light.qss";
-    QFile file(path);
-
-    if (file.open(QFile::ReadOnly | QFile::Text)) {
-        QByteArray data = file.readAll(); //读取为 QByteArray
-        qss = QString::fromUtf8(data); //使用 fromUtf8 转换为 QString
-        file.close();
-    }
-    qApp->setStyleSheet(qss); // 应用样式表
-    m_currentTheme = theme; // 更新当前主题状态
-}
-
-// “切换”按钮点击时被调用的槽函数
-void MainWindow::onToggleTheme() {
-    // 切换主题
-    m_currentTheme = (m_currentTheme == Theme::Light) ? Theme::Dark : Theme::Light;
-    // 应用新主题
-    applyTheme(m_currentTheme);
-    // 保存用户的选择
-    saveThemePreference(m_currentTheme);
-}
-
-// 使用QSettings保存主题偏好
-void MainWindow::saveThemePreference(Theme theme) const {
-    QSettings settings("MyWork", "Dayflow");
-    settings.setValue("theme", static_cast<int>(theme));
-}
-
-// 从QSettings加载主题偏好
-Theme MainWindow::loadThemePreference() const {
-    QSettings settings("MyWork", "Dayflow");
-    // 默认返回浅色主题
-    return static_cast<Theme>(settings.value("theme", static_cast<int>(Theme::Light)).toInt());
-}
-
-// 在构造函数中调用的启动函数
-void MainWindow::setupTheme() {
-    m_currentTheme = loadThemePreference();
-    applyTheme(m_currentTheme);
-}
-void MainWindow::onBackgroundImageChanged(const QString& imagePath)
-{
-    QSettings settings("MyWork", "Dayflow");
-    settings.setValue("backgroundImagePath", imagePath);
 }
