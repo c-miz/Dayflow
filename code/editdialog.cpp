@@ -22,9 +22,9 @@ EditDialog::EditDialog(QWidget *parent, const ScheduleItem &item)
 
 
     // 初始化标签输入框
-    ui->tag1Edit->addItems({"无","1","2","3"});
-    ui->tag2Edit->addItems({"无","4","5","6"});
-    ui->tag3Edit->addItems({"无","7","8","9"});
+    ui->tag1Edit->addItems({"无", "学习", "工作", "日常"});
+    ui->tag2Edit->addItems({"无", "临时", "短期", "长期"});
+    ui->tag3Edit->addItems({"无","固定刚性日程", "弹性优化日程", "突发日程"});
     ui->priorbox->setValue(item.priority);
     ui->priorbox->setMaximum(5);
 

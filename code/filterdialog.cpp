@@ -8,9 +8,9 @@ filterdialog::filterdialog(QWidget *parent)
     ui->setupUi(this);
 
     // 初始化标签下拉框选项，与 EditDialog 保持一致性
-    ui->comboBox->addItems({"无", "1", "2", "3"});
-    ui->comboBox_2->addItems({"无", "4", "5", "6"});
-    ui->comboBox_3->addItems({"无", "7", "8", "9"});
+    ui->comboBox->addItems({"无", "学习", "工作", "日常"});
+    ui->comboBox_2->addItems({"无", "临时", "短期", "长期"});
+    ui->comboBox_3->addItems({"无", "固定刚性日程", "弹性优化日程", "突发日程"});
 
     // 为 dateEdit 设置一个默认日期，例如当天
     ui->dateEdit->setDate(QDate::currentDate());
