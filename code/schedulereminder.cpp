@@ -37,7 +37,7 @@ void ScheduleReminder::checkSchedules(){
             }
         }
 
-        if( checkDate==true&&currentTime >= scheduletime.addSecs(-60)&&currentTime<scheduletime) {
+        if( checkDate==true&&currentTime >= scheduletime&&currentTime<scheduletime.addSecs(60)) {
             // 触发提醒
             QString msg = QString("日程提醒：%1 即将在%2分钟后开始")
                               .arg(item.title)

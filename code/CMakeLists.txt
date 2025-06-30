@@ -33,9 +33,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         schedulefilterproxymodel.h schedulefilterproxymodel.cpp
         notification.h notification.cpp
         schedulereminder.h schedulereminder.cpp
+        resources.qrc
         category.h
-
-
 
     )
 # Define target properties for Android with Qt 6 as:

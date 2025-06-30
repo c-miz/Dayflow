@@ -3,12 +3,11 @@
 #include <QPushButton>
 #include "mainwindow.h"
 
-
 EditDialog::EditDialog(QWidget *parent, const ScheduleItem &item)
     : QDialog(parent), ui(new Ui::EditDialog)
 {
     ui->setupUi(this);
-    QComboBox *categoryCombo = new QComboBox();
+    QComboBox *categoryCombo=new QComboBox();
     categoryCombo->setObjectName("categoryCombo");
 
     // 初始化控件
@@ -19,7 +18,7 @@ EditDialog::EditDialog(QWidget *parent, const ScheduleItem &item)
     ui->repeatCombo->addItems({"无重复", "每天", "每周", "每月"});
     ui->repeatCombo->setCurrentIndex(item.repeatType);
     ui->remindTime->setValue(item.advanceAmount);
-     ui->formLayout->insertRow(3, "所属类别:", categoryCombo);
+    ui->formLayout->insertRow(3, "所属类别:", categoryCombo);
 
 
     // 初始化标签输入框
@@ -32,7 +31,6 @@ EditDialog::EditDialog(QWidget *parent, const ScheduleItem &item)
     // 连接时间验证信号
     connect(ui->startTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &EditDialog::validateTimes);
     connect(ui->endTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &EditDialog::validateTimes);
-    // 加载类别数据
     for (const Category &cat : MainWindow::loadCategoriesFromJson()) {
         categoryCombo->addItem(cat.name);
     }
@@ -67,7 +65,6 @@ ScheduleItem EditDialog::getScheduleItem() const
     QComboBox *combo = findChild<QComboBox*>("categoryCombo");
     QString category = combo ? combo->currentText() : "";
     item.category = (category == "未分类") ? "" : category;
-
 
     return item;
 }

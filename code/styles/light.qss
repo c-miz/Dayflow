@@ -1,0 +1,30 @@
+#calendarViewWidget > QWidget,
+#calendarViewWidget > QLayout > QWidget {
+    background-color: transparent;
+}
+EventCalendar, QCalendarWidget, QCalendarWidget QTableView {
+    background-color: transparent;
+}
+QCalendarWidget QHeaderView::section {
+    background-color: transparent;
+}
+QWidget {
+    background-color: #FFFFFF;
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+QLabel#monthLabel { font-size: 24px; font-weight: bold; color: #333333; }
+QPushButton#flatIconButton, QPushButton#navButton { background-color: transparent; border: none; color: #555555; font-weight: bold; }
+QPushButton#flatIconButton { font-size: 22px; padding: 0px 5px; }
+QPushButton#navButton { font-size: 14px; padding: 0px 4px; }
+QPushButton#flatIconButton:hover, QPushButton#navButton:hover { color: #000000; }
+QCalendarWidget QHeaderView::section { background-color: transparent; color: #888888; }
+QLineEdit, QTimeEdit, QDateEdit, QSpinBox, QComboBox { background-color: #FFFFFF; color: #333; border: 1px solid #DCDCDC; border-radius: 4px; padding: 4px; }
+QTableView { background-color: #FFFFFF; color: #333; border: 1px solid #DCDCDC; gridline-color: #F0F0F0; }
+QTableView::item:selected { background-color: #1875F0; color: white; }
+QHeaderView::section { background-color: #F8F8F8; color: #333; padding: 4px; border: 1px solid #DCDCDC; }
+QMessageBox#infoMessageBox {
+    background-color: #FDFDFD;
+}
+QMessageBox#infoMessageBox QLabel {
+    color: #333333;
+}

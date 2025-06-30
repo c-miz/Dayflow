@@ -4,47 +4,74 @@
 #include <QPushButton>
 #include <QCalendarWidget>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QMessageBox>
 #include <QLabel>
 #include "eventcalendar.h"
+#include <QSpacerItem>
+#include <QFileDialog>
 
 CalendarView::CalendarView(ScheduleModel *model, QWidget *parent)
     : QWidget(parent), m_model(model)
 {
+    this->setObjectName("calendarViewWidget");
+    this->setAutoFillBackground(true);
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(10, 10, 10, 10);
+    mainLayout->setSpacing(15);
 
-    // 导航栏
+    //头部导航栏
     QHBoxLayout *navLayout = new QHBoxLayout;
-    QPushButton *prevBtn = new QPushButton("◀", this);
-    QPushButton *nextBtn = new QPushButton("▶", this);
+
     m_monthLabel = new QLabel(this);
+    m_monthLabel->setObjectName("monthLabel");
 
-    navLayout->addWidget(prevBtn);
+    QPushButton *prevMonthBtn = new QPushButton("◀", this);
+    QPushButton *nextMonthBtn = new QPushButton("▶", this);
+    prevMonthBtn->setObjectName("navButton");
+    nextMonthBtn->setObjectName("navButton");
+
+    QSpacerItem *spacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+    QPushButton *addBtn = new QPushButton("+", this);
+    addBtn->setObjectName("flatIconButton");
+    QPushButton *menuBtn = new QPushButton("切换", this);
+    menuBtn->setObjectName("flatIconButton");
+    QPushButton *clearBgBtn = new QPushButton("-", this);
+    clearBgBtn->setObjectName("flatIconButton");
+
+    //修改布局顺序
     navLayout->addWidget(m_monthLabel);
-    navLayout->addWidget(nextBtn);
+    navLayout->addWidget(prevMonthBtn);
+    navLayout->addWidget(nextMonthBtn);
+    navLayout->addSpacerItem(spacer);
+    navLayout->addWidget(addBtn);
+    navLayout->addWidget(clearBgBtn);
+    navLayout->addWidget(menuBtn);
 
-    // 日历控件
+    //(不变)
     m_calendar = new EventCalendar(this);
+    m_calendar->findChild<QWidget*>("qt_calendar_navigationbar")->setVisible(false);
     m_calendar->setVerticalHeaderFormat(QCalendarWidget::NoVerticalHeader);
+    m_calendar->setHorizontalHeaderFormat(QCalendarWidget::SingleLetterDayNames);
 
     mainLayout->addLayout(navLayout);
     mainLayout->addWidget(m_calendar);
+    setLayout(mainLayout);
 
-    // 信号连接
-    connect(prevBtn, &QPushButton::clicked,
-            m_calendar, &QCalendarWidget::showPreviousMonth);
-    connect(nextBtn, &QPushButton::clicked,
-            m_calendar, &QCalendarWidget::showNextMonth);
-    connect(m_calendar, &QCalendarWidget::clicked,
-            this, &CalendarView::handleDateClick);
-    connect(m_calendar, &QCalendarWidget::currentPageChanged,
-            this, &CalendarView::updateMonth);
+    //信号连接
+    connect(prevMonthBtn, &QPushButton::clicked, m_calendar, &QCalendarWidget::showPreviousMonth);
+    connect(nextMonthBtn, &QPushButton::clicked, m_calendar, &QCalendarWidget::showNextMonth);
+    connect(m_calendar, &QCalendarWidget::clicked, this, &CalendarView::handleDateClick);
+    connect(m_calendar, &QCalendarWidget::currentPageChanged, this, &CalendarView::updateMonth);
+    connect(menuBtn, &QPushButton::clicked, this, &CalendarView::themeChangeRequested);
+    connect(addBtn, &QPushButton::clicked, this, &CalendarView::onSetBackgroundClicked);
+    connect(clearBgBtn, &QPushButton::clicked, this, &CalendarView::onClearBackgroundClicked);
 
-    updateMonth(QDate::currentDate().year(),
-                QDate::currentDate().month());
-
+    // 初始化
+    updateMonth(QDate::currentDate().year(), QDate::currentDate().month());
+    refresh();
 }
-
 void CalendarView::refresh()
 {
     paintEventMarkers();
@@ -54,7 +81,8 @@ void CalendarView::refresh()
 void CalendarView::updateMonth(int year, int month)
 {
     QDate date(year, month, 1);
-    m_monthLabel->setText(date.toString("yyyy年MM月"));
+    // 修改标签文本格式为 "YYYY / M"
+    m_monthLabel->setText(date.toString("yyyy / M"));
     paintEventMarkers();
 }
 
@@ -119,7 +147,52 @@ void CalendarView::handleDateClick(const QDate &date)
             eventDetails<<detail;
         }
     }
+    QMessageBox msgBox(this);
+    msgBox.setObjectName("infoMessageBox");
+    msgBox.setWindowTitle(date.toString("yyyy-MM-dd") + "日程");
+    msgBox.setText(eventDetails.join("\n"));
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setStandardButtons(QMessageBox::Ok); // 只保留“OK”按钮
 
-    QMessageBox::information(this, date.toString("yyyy-MM-dd")+"日程",
-                             eventDetails.join("\n"));
+    //调整OK按钮
+    QAbstractButton *okButton = msgBox.button(QMessageBox::Ok);
+    if(okButton) {
+        okButton->setMinimumWidth(100);
+    }
+
+    msgBox.exec();
+}
+void CalendarView::onSetBackgroundClicked()
+{
+    QString imagePath = QFileDialog::getOpenFileName(this, "选择背景图片", "", "图片文件 (*.png *.jpg *.jpeg *.bmp)");
+    if (!imagePath.isEmpty()) {
+        setBackgroundImage(imagePath);
+        emit backgroundImageChanged(imagePath); // 发出信号，通知主窗口保存路径
+    }
+}
+
+// 设置背景图片的核心
+void CalendarView::setBackgroundImage(const QString& imagePath)
+{
+    if (imagePath.isEmpty() || !m_backgroundImage.load(imagePath)) {
+        // 如果路径为空，或者加载图片失败
+        m_backgroundImage = QPixmap(); // 清空图片
+    }
+    update();
+}
+void CalendarView::onClearBackgroundClicked()
+{
+    setBackgroundImage(""); // 调用 setBackgroundImage 并传入空路径，即可清除背景
+    emit backgroundImageChanged(""); // 发出信号，通知主窗口保存空路径，即清除设置
+}
+void CalendarView::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+
+    // 首先检查背景图片是否存在且有效
+    if (!m_backgroundImage.isNull()) {
+        // 将图片绘制到整个区域
+        painter.drawPixmap(this->rect(), m_backgroundImage);
+    }
+    QWidget::paintEvent(event);
 }

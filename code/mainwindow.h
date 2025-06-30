@@ -6,14 +6,15 @@
 #include <QLabel>
 #include <QPushButton>
 #include "calendarview.h"
-#include "schedulefilterproxymodel.h"
 #include "category.h"
+#include "schedulefilterproxymodel.h"
 #include "QTableWidget"
-
 
 namespace Ui {
 class MainWindow;
 }
+
+enum class Theme { Light, Dark };
 
 class MainWindow : public QMainWindow
 {
@@ -29,6 +30,8 @@ private slots:
     void onEdit();
     void onDelete();
     void onFilter();
+    void onToggleTheme();
+    void onBackgroundImageChanged(const QString& imagePath);
 private:
     Ui::MainWindow *ui;
     ScheduleModel *model;
@@ -59,7 +62,12 @@ private:
     QLabel *monthLabel;
     QPushButton *prevMonthBtn;
     QPushButton *nextMonthBtn;
-    static const QString CONFIG_FILENAME; // 常量声明
+    void setupTheme();
+    void applyTheme(Theme theme);
+    void saveThemePreference(Theme theme) const;
+    Theme loadThemePreference() const;
+    Theme m_currentTheme;
+    static const QString CONFIG_FILENAME;
 };
 
 #endif // MAINWINDOW_H

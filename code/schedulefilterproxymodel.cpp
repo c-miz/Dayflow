@@ -40,7 +40,7 @@ bool ScheduleFilterProxyModel::filterAcceptsRow(int sourceRow, const QModelIndex
     }
 
     // Priority匹配
-    if (m_criteria.priority!=0&&item.priority != m_criteria.priority) {
+    if (item.priority != m_criteria.priority) {
         return false;
     }
 
